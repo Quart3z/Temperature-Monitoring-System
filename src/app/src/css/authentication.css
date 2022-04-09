@@ -1,0 +1,27 @@
+.authentication_container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    min-height: 100%;
+    padding: 20px;
+}
+
+.authentication_card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    padding: 10px;
+    width: 400px;
+    border: 1px solid black;
+}
+
+.login_card {
+    min-height: 300px;
+}
+
+.register_card {
+    min-height: 400px;
+}
