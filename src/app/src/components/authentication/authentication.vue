@@ -1,5 +1,5 @@
 <template>
-    <div class="container authentication_container">
+    <div class="container authentication-container">
         <Login v-show="!registration" @isRegister="(n) => registration = n"/>
         <Register v-show="registration" @isRegister="(n) => registration = n"/>
     </div>

@@ -11,9 +11,9 @@ module.exports = {
     },
     pages: {
         index: {
-            entry: './src/pages/dashboard/main.js',
+            entry: './src/pages/main/main.js',
             template: 'public/index.html',
-            title: 'Dashborad',
+            title: 'Main',
             chunks: ['chunk-vendors', 'chunk-common', 'index'],
         },
         authentication: {

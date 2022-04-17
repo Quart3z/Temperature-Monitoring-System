@@ -1,0 +1,38 @@
+:root {
+    --sidebar-width: 250px;
+    --empty-region-size: 170px;
+}
+
+body {
+    background-color: aliceblue;
+}
+
+a,
+.nav-link {
+    cursor: pointer;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+}
+
+.main-panel {
+    width: calc(100% - var(--sidebar-width));
+}
+
+
+.body-container {
+    padding: 20px 20px;
+    height: calc(100% - var(--header-height));
+    display: flex;
+
+}
+
+.empty-region {
+
+    display: flex;
+    flex-direction: column;
+    border: 2px dashed rgba(196, 196, 196, 0.893);
+
+}

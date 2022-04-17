@@ -1,0 +1,51 @@
+<template>
+    <div id="main">
+        <Sidebar />
+        <div class="float-end main-panel">
+            <Header :id=user.id />
+            <Body :id=user.id />
+        </div>
+    </div>
+</template>
+ 
+<script>
+    import Sidebar from "./sidebar.vue";
+    import Header from "./header.vue";
+    import Body from "./body.vue";
+
+    export default {
+        name: 'Main',
+        data() {
+            return {
+                user: {},
+                currentPage: "Dashboard"
+            }
+        },
+        methods: {
+
+        },
+        mounted() {
+
+            fetch("/getUser")
+                .then(response => {
+
+                    if (response.status == 200) {
+                        response.json().then(data => {
+                            this.user = data
+                        })
+                    } else {
+                        console.log(response);
+                    }
+                })
+
+        },
+        components: {
+            Sidebar,
+            Header,
+            Body
+        }
+    }
+</script>
+
+<style>
+</style>

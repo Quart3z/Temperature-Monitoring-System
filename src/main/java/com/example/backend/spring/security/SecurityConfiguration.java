@@ -1,8 +1,7 @@
-package com.example.backend.security;
+package com.example.backend.spring.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,8 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.annotation.Resource;
 
@@ -56,6 +53,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
+    /**
+     *  Security filter chain
+     *      - allow access for login page
+     *      - block access of non-registered user
+     * */
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception{
 
@@ -70,7 +72,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .loginPage("/authentication")
                     .loginProcessingUrl("/login")
                     .usernameParameter("username").passwordParameter("password")
-                .and()
+                    .and()
                 .logout();
 
     }

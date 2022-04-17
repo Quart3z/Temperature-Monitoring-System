@@ -1,4 +1,4 @@
-package com.example.backend.security;
+package com.example.backend.spring.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -6,9 +6,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,12 +22,13 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         super(new AntPathRequestMatcher("/login", "POST"));
     }
 
+    private String username;
+    private String password;
+
     // Extraction of credentials from request body
     @Override
     public Authentication attemptAuthentication(
             HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
-        String username, password;
 
         try {
 
@@ -46,5 +47,10 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
+    @Override
+    protected void successfulAuthentication(
+            HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        super.successfulAuthentication(request, response, chain, authResult);
+    }
 
 }
