@@ -19,8 +19,9 @@
                                     <div v-bind:style="{display: uploadFail}" class="invalid-feedback">Fail to upload dataset</div>
                                 </div>
                             </div>
-                            <div class="progress my-3" style="width: 200px" v-else>
-                                <div class="progress-bar" role="progressbar" v-bind:style="{width: progress + '%'}" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="d-flex flex-column align-items-center" v-else>
+                                <div class="spinner-border text-primary mb-2" role="status"></div>
+                                Uploading ...
                             </div>
                         </div>
                     </div>

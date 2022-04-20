@@ -1,72 +1,92 @@
 package com.example.backend.spring.entity;
 
+import com.example.backend.spring.repository.DeviceRepository;
+import com.example.backend.spring.repository.EntryRepository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Entity
 public class Entry {
 
+    /**
+     * ====================
+     * Attributes & columns
+     * ====================
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String uuid;
+    /**
+     * Many-to-one relationship with Device table
+     * foreign key - uuid
+     */
+    @ManyToOne(targetEntity = Device.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "device_id")
+    private Device device;
 
-    @Column(nullable = false, unique = true)
-    private Long userId;
-
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Long timestamp;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private float temperature;
 
-    public Entry(String uuid, Long userId, Long timestamp, float temperature ){
-        this.uuid = uuid;
-        this.userId = userId;
+    @JsonIgnore
+    @Transient
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+    /**
+     * =================
+     * Class constructor
+     * =================
+     */
+    public Entry() {
+    }
+
+    public Entry(Device device, Long timestamp, float temperature) {
+        this.device = device;
         this.timestamp = timestamp;
         this.temperature = temperature;
     }
 
-    public Entry(ArrayList<String> entry){
-
-        System.out.println(entry.get(0));
-        this.uuid = entry.get(0);
-        System.out.println(entry.get(1));
-        this.userId = Long.parseLong(entry.get(1));
-        System.out.println(entry.get(2));
+    public Entry(ArrayList<String> entry, Device device) {
+        this.device = device;
         this.timestamp = Long.parseLong(entry.get(2));
-        System.out.println(entry.get(3));
         this.temperature = Float.parseFloat(entry.get(3));
-
     }
 
-    public Long getId(){
-        return  id;
+    /**
+     * =======================
+     * Accessors and mutators
+     * =======================
+     */
+    public Long getId() {
+        return id;
     }
 
-    public String getUuid(){
-        return uuid;
+    public Device getDevice() {
+        return device;
     }
 
-    public void setUuid(String uuid){
-        this.uuid = uuid;
+    public Long getDeviceId(){
+        return device.getId();
     }
 
-    public Long getUserId(){
-        return userId;
+    public void setDevice(Device device) {
+        this.device = device;
     }
 
-    public void setUserId(Long userId){
-        this.userId = userId;
-    }
-
-    public Long getTimestamp(){
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp){
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -74,7 +94,8 @@ public class Entry {
         return temperature;
     }
 
-    public void setTemperature(float temperature){
+    public void setTemperature(float temperature) {
         this.temperature = temperature;
     }
+
 }

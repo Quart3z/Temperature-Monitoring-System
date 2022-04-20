@@ -21,9 +21,10 @@
 
 <script>
     import UploadModal from "../dataset/uploadModal.vue"
+    
 
     export default {
-        name: 'Selection',
+        name: 'Utilities',
         data() {
             return {
                 // datasets: [],

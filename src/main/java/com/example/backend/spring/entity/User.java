@@ -7,8 +7,13 @@ import javax.persistence.*;
 @Entity
 public class User {
 
+    /**
+     * ====================
+     * Attributes & columns
+     * ====================
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -16,13 +21,18 @@ public class User {
 
     private String password;
 
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     // status: 0 - unverified,  1 - verified
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false)
     private int status;
 
+    /**
+     * =======================
+     * Accessors and mutators
+     * =======================
+     */
     public Long getId() {
         return id;
     }

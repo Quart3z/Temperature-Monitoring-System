@@ -1,10 +1,9 @@
 package com.example.backend.spring.entity;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
-public class Token {
+public class Device {
 
     /**
      * ====================
@@ -16,13 +15,13 @@ public class Token {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String token;
+    private String uuid;
 
     /**
-     * One-to-one relationship with User table
+     * Many-to-one relationship with User table
      * foreign key - user_id
      */
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
@@ -31,12 +30,12 @@ public class Token {
      * Class constructor
      * =================
      */
-    public Token() {
+    public Device() {
     }
 
-    public Token(User user) {
+    public Device(String uuid, User user) {
+        this.uuid = uuid;
         this.user = user;
-        this.token = UUID.randomUUID().toString();
     }
 
     /**
@@ -44,8 +43,24 @@ public class Token {
      * Accessors and mutators
      * =======================
      */
-    public String getToken() {
-        return token;
+    public Long getId() {
+        return id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }
