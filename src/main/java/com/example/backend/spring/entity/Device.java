@@ -3,6 +3,7 @@ package com.example.backend.spring.entity;
 import javax.persistence.*;
 
 @Entity
+@Table
 public class Device {
 
     /**

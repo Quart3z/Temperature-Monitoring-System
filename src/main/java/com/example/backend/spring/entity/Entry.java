@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
+@Table
 public class Entry {
 
     /**
@@ -36,10 +37,6 @@ public class Entry {
 
     @Column(nullable = false)
     private float temperature;
-
-    @JsonIgnore
-    @Transient
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     /**
      * =================

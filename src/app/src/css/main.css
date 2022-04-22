@@ -36,3 +36,8 @@ a,
     border: 2px dashed rgba(196, 196, 196, 0.893);
 
 }
+
+.tooltip-container {
+    z-index: 5;
+    position: relative;
+}

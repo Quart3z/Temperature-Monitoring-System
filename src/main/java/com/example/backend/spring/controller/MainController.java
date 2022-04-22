@@ -11,6 +11,7 @@ import com.example.backend.spring.repository.EntryRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.datavec.api.formats.input.impl.CSVInputFormat;
@@ -79,8 +80,7 @@ public class MainController {
 
                 while ((row = csvReader.readNext()) != null) {
 
-
-                     // Convert array to arraylist
+                    // Convert array to arraylist
                     ArrayList<String> rowArray = new ArrayList<>(Arrays.asList(row));
                     rowArray.removeAll(Collections.singleton(null));
                     rowArray.removeAll(Collections.singleton(""));
@@ -93,7 +93,7 @@ public class MainController {
                     Device device = new Device(rowArray.get(0), user);
                     if (deviceRepository.findByUuid(rowArray.get(0)) == null) {
                         deviceRepository.save(device);
-                    }else{
+                    } else {
                         device = deviceRepository.findByUuid(rowArray.get(0));
                     }
 
@@ -120,14 +120,23 @@ public class MainController {
         System.out.println(deserializedBody);
 
         int count = deserializedBody.get("filter").getAsJsonObject().get("count").getAsInt();
-        Collection<Entry> entries = entryRepository.findEntries(count);
+
+        JsonArray period = deserializedBody.get("filter").getAsJsonObject().get("period").getAsJsonArray();
+        long start = period.get(0).getAsLong();
+        long end = period.get(1).getAsLong();
+
+        JsonArray temperature = deserializedBody.get("filter").getAsJsonObject().get("temperature").getAsJsonArray();
+        float min = temperature.get(0).getAsFloat();
+        float max = temperature.get(1).getAsFloat();
+
+        Collection<Entry> entries = entryRepository.findEntries(count, start, end, min, max);
 
         Map<Long, List<Entry>> hashMap = Optional.ofNullable(entries)
                 .orElseGet(ArrayList::new)
                 .stream()
                 .collect(Collectors
                         .groupingBy(Entry::getDeviceId));
-        
+
         if (!entries.isEmpty()) {
             return new Gson().toJson(hashMap);
         } else {
