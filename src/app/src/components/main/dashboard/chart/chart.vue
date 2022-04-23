@@ -13,11 +13,22 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label class="form-label">No. of nodes</label>
-                        <vue-slider v-model="count" v-on:change="getData" />
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">No. of nodes</span>
+                            </div>
+                            <input type="number" class="form-control" v-model="count">
+                        </div>
+                        <vue-slider :max="5000" v-model="count" v-on:change="getData" />
                     </div>
                     <div class="col">
-                        <label class="form-label">Temperature</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Temperature</span>
+                            </div>
+                            <input type="number" class="form-control" v-bind:max="temperature[1]" v-model="temperature[0]">
+                            <input type="number" class="form-control" v-bind:min="temperature[0]" v-model="temperature[1]">
+                        </div>
                         <vue-slider v-model="temperature" v-on:change="getData" :enable-cross="false" :interval="0.01" />
                     </div>
                 </div>
@@ -49,12 +60,13 @@
 
     Exporting(highcharts)
     ExportData(highcharts)
+    
     export default {
         name: 'Chart',
         data() {
             return {
                 redraw: true,
-                count: "5",
+                count: "20",
                 minReading: 10,
                 maxReading: 50,
                 temperature: [10, 50],
@@ -65,7 +77,7 @@
                         useUTC: false
                     },
                     title: {
-                        text: "Devices Temperature"
+                        text: "Temperature - time"
                     },
                     chart: {
                         spacingLeft: 30,

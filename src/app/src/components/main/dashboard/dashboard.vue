@@ -1,13 +1,14 @@
 <template>
     <div id="dashboard" class="">
-        <Utilities :id=id />
+        <!-- <Utilities :id=id /> -->
+        <Chart :id=id />
         <Chart :id=id />
     </div>
 </template>
 
 <script>
-    import Utilities from "./utilities.vue"
-    import Chart from "../dataset/chart.vue"
+    // import Utilities from "./utilities.vue"
+    import Chart from "./chart/chart.vue"
 
     export default {
         name: 'Dashboard',
@@ -18,7 +19,7 @@
             id: null
         },
         components: {
-            Utilities,
+            // Utilities,
             Chart
         },
     }

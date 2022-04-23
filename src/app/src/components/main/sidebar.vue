@@ -4,8 +4,8 @@
             <h1>[LOGO]</h1>
         </div>
         <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item"><a class="nav-link active">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link text-white">Dataset</a></li>
+            <li class="nav-item"><a v-bind:class="{'text-white':true, 'nav-link':true, 'active': currentPage === 'Dashboard'}" v-on:click="navigator('Dashboard')">Dashboard</a></li>
+            <li class="nav-item"><a v-bind:class="{'text-white':true, 'nav-link':true, 'active': currentPage === 'Dataset'}" v-on:click="navigator('Dataset')">Dataset</a></li>
         </ul>
     </div>
 </template>
@@ -14,13 +14,14 @@
     export default {
         name: 'Sidebar',
         data() {
-            return {
-                currentPage: "Dashboard"
-            }
+            return {}
+        },
+        props: {
+            currentPage: null
         },
         methods: {
-            navigator: function () {
-
+            navigator: function (page) {
+                this.$emit("navigate", page)
             }
         },
     }

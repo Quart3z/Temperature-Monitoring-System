@@ -1,13 +1,13 @@
 <template>
     <div id="main">
-        <Sidebar />
+        <Sidebar :currentPage="currentPage" @navigate="navigate" />
         <div class="float-end main-panel">
             <Header :id=user.id />
-            <Body :id=user.id />
+            <Body :id=user.id :currentPage="currentPage" />
         </div>
     </div>
 </template>
- 
+
 <script>
     import Sidebar from "./sidebar.vue";
     import Header from "./header.vue";
@@ -22,7 +22,9 @@
             }
         },
         methods: {
-
+            navigate: function(page){
+                this.currentPage = page
+            }
         },
         mounted() {
 

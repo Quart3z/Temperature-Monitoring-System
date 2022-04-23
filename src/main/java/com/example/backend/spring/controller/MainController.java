@@ -16,6 +16,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.datavec.api.formats.input.impl.CSVInputFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -117,8 +120,6 @@ public class MainController {
 
         JsonObject deserializedBody = JsonParser.parseString(body).getAsJsonObject();
 
-        System.out.println(deserializedBody);
-
         int count = deserializedBody.get("filter").getAsJsonObject().get("count").getAsInt();
 
         JsonArray period = deserializedBody.get("filter").getAsJsonObject().get("period").getAsJsonArray();
@@ -145,5 +146,29 @@ public class MainController {
 
     }
 
+    @PostMapping("/listData")
+    public String listData(@RequestBody String body) {
+
+        JsonObject deserializedBody = JsonParser.parseString(body).getAsJsonObject();
+        int count = deserializedBody.get("filter").getAsJsonObject().get("count").getAsInt();
+
+        Pageable limit = PageRequest.of(0, count);
+
+        Page<Entry> entries = entryRepository.findAll(limit);
+
+        if (!entries.isEmpty()) {
+            return new Gson().toJson(entries);
+        } else {
+            return "[]";
+        }
+    }
+
+    @PostMapping("/train")
+    public String train(@RequestBody String body) {
+
+
+
+        return "";
+    }
 
 }

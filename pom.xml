@@ -37,6 +37,12 @@
             <version>${dl4j.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.datavec</groupId>
+            <artifactId>datavec-api</artifactId>
+            <version>${dl4j.version}</version>
+        </dependency>
+
         <!--    Spring    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
