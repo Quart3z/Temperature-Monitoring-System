@@ -17,4 +17,6 @@ public interface EntryRepository extends JpaRepository<Entry, Long> {
             nativeQuery = true)
     Collection<Entry> findEntries(@Param("count") int count, @Param("start") long start, @Param("end") long end, @Param("min") float min, @Param("max") float max);
 
+
+
 }
