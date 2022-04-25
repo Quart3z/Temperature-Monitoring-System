@@ -2,6 +2,8 @@ package com.example.backend.spring.controller;
 
 import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
+import com.example.backend.dataProcessing.Training;
 import com.example.backend.spring.entity.Device;
 import com.example.backend.spring.entity.Entry;
 import com.example.backend.spring.entity.User;
@@ -166,7 +168,27 @@ public class MainController {
     @PostMapping("/train")
     public String train(@RequestBody String body) {
 
+        System.out.println("write to CSV");
 
+        JsonObject deserializedBody = JsonParser.parseString(body).getAsJsonObject();
+        String id = deserializedBody.get("id").getAsString();
+
+        Collection<Entry> entries = entryRepository.findAll();
+
+        try {
+
+            CSVWriter writer = new CSVWriter(new FileWriter("src/main/resources/users/" + id + "/dataset.csv"));
+            for (Entry entry : entries) {
+                writer.writeNext(entry.returnAsStringArray());
+            }
+            writer.close();
+
+            Training training = new Training(id);
+            training.trainingProcess();
+
+        } catch (IOException | InterruptedException exception) {
+            System.out.println(exception);
+        }
 
         return "";
     }

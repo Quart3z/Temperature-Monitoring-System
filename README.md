@@ -95,7 +95,7 @@ The easiest way to set up the database is using XAMPP as the server for database
    git clone https://github.com/Quart3z/Temperature-Monitoring-System.git
    ```
    
-2. Replace the followings properties according to your preference:
+2. Replace the followings properties according to your preference in the file [src/main/resources/application.properties](src/main/resources/application.properties):
    ```
    // Configuration of database
    spring.datasource.url=jdbc:mysql:[DATABASE_URL]
