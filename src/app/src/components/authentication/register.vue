@@ -102,6 +102,7 @@
 
                 if (this.username != "" && this.email != "" && this.password != "" && this.passwordRepeat != "") {
 
+
                     const request = {
                         method: "POST",
                         headers: {

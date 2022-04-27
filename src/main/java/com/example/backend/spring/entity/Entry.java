@@ -44,6 +44,12 @@ public class Entry {
     @Column(nullable = false)
     private float humidity;
 
+    @Column(nullable = false)
+    private float precipitation;
+
+    @Column(nullable = false)
+    private float windSpeed;
+
     /**
      * =================
      * Class constructor
@@ -52,11 +58,13 @@ public class Entry {
     public Entry() {
     }
 
-    public Entry(Device device, Long timestamp, float temperature, float humidity) {
+    public Entry(Device device, Long timestamp, float temperature, float humidity, float precipitation, float windSpeed) {
         this.device = device;
         this.timestamp = timestamp;
         this.temperature = temperature;
         this.humidity = humidity;
+        this.precipitation = precipitation;
+        this.windSpeed = windSpeed;
     }
 
     public Entry(ArrayList<String> entry, Device device) {
@@ -64,6 +72,8 @@ public class Entry {
         this.timestamp = Long.parseLong(entry.get(2));
         this.temperature = Float.parseFloat(entry.get(3));
         this.humidity = 0;
+        this.precipitation = 0;
+        this.windSpeed = 0;
     }
 
     /**
@@ -111,19 +121,30 @@ public class Entry {
         this.humidity = humidity;
     }
 
-    public String[] returnAsStringArray() {
+    public float getPrecipitation() {
+        return precipitation;
+    }
 
-        LocalDateTime date = new LocalDateTime(timestamp);
-        int month = date.getMonthOfYear();
-        int day = date.getDayOfYear();
-        int millisecond = date.getMillisOfDay();
+    public void setPrecipitation(float precipitation) {
+        this.precipitation = precipitation;
+    }
+
+    public float getWindSpeed() {
+        return windSpeed;
+    }
+
+    public void setWindSpeed(float windSpeed) {
+        this.windSpeed = windSpeed;
+    }
+
+    public String[] returnAsStringArray() {
 
         return new String[]{
                 String.valueOf(temperature),
-                String.valueOf(month),
-                String.valueOf(day),
-                String.valueOf(millisecond)
-//                String.valueOf(humidity)
+//                String.valueOf(timestamp),
+//                String.valueOf(humidity),
+//                String.valueOf(precipitation)
+//                String.valueOf(windSpeed)
         };
 
     }

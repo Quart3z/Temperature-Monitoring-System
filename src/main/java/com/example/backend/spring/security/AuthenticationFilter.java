@@ -25,7 +25,10 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
     private String username;
     private String password;
 
-    // Extraction of credentials from request body
+    /**
+     * Return authentication result based on give username, password
+     * Authenticate the credentials extracted from the posted request body
+     */
     @Override
     public Authentication attemptAuthentication(
             HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -47,6 +50,9 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
+    /**
+     *  Run when user is successfully authenticated
+     * */
     @Override
     protected void successfulAuthentication(
             HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {

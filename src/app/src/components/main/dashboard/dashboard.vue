@@ -1,14 +1,13 @@
 <template>
     <div id="dashboard" class="">
-        <!-- <Utilities :id=id /> -->
         <Chart :id=id />
-        <Chart :id=id />
+        <Prediction :id=id />
     </div>
 </template>
 
 <script>
-    // import Utilities from "./utilities.vue"
     import Chart from "./chart/chart.vue"
+    import Prediction from "./chart/prediction.vue"
 
     export default {
         name: 'Dashboard',
@@ -19,8 +18,8 @@
             id: null
         },
         components: {
-            // Utilities,
-            Chart
+            Chart,
+            Prediction
         },
     }
 </script>

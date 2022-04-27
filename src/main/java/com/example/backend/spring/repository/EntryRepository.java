@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface EntryRepository extends JpaRepository<Entry, Long> {
 
@@ -17,6 +18,8 @@ public interface EntryRepository extends JpaRepository<Entry, Long> {
             nativeQuery = true)
     Collection<Entry> findEntries(@Param("count") int count, @Param("start") long start, @Param("end") long end, @Param("min") float min, @Param("max") float max);
 
+    @Query(value = "SELECT * FROM Entry ORDER BY Entry.timestamp ASC", nativeQuery = true)
+    List<Entry> findAllSortedByTimestamp();
 
 
 }

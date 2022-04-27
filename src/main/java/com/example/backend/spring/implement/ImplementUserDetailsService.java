@@ -30,7 +30,12 @@ public class ImplementUserDetailsService implements UserDetailsService {
                 .build();
     }
 
-    // New user creation
+    /**
+     * Save the registered user, created the user folder accordingly
+     * Return the newly created user
+     *
+     * @param user object of the registered user, consists of the user credentials
+     */
     public User save(User user) {
         User newUser = userRepository.save(user);
 
@@ -41,10 +46,14 @@ public class ImplementUserDetailsService implements UserDetailsService {
         }
 
         return newUser;
-
     }
 
-    // New user verification
+    /**
+     * Return true if verification token is verified
+     * Return false if no user exists or user is already verified
+     *
+     * @param token verification token for user verification
+     */
     public boolean verification(String token) {
         User user = userRepository.findUserByToken(token);
 
@@ -58,6 +67,11 @@ public class ImplementUserDetailsService implements UserDetailsService {
         }
     }
 
+    /**
+     * Return User object from database based on given username
+     *
+     * @param username string of username
+     */
     public User getUser(String username) {
         return userRepository.findByUsername(username);
     }

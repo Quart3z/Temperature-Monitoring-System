@@ -1,6 +1,7 @@
 package com.example.backend.spring.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 
@@ -17,10 +18,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(nullable = false, unique = true)
     private String username;
-
-    private String password;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -28,6 +30,20 @@ public class User {
     // status: 0 - unverified,  1 - verified
     @Column(nullable = false)
     private int status;
+
+    /**
+     * =================
+     * Class constructor
+     * =================
+     */
+    public  User(){}
+
+    public User(String password, String username, String email, int status){
+        this.password = new BCryptPasswordEncoder().encode(password);
+        this.username = username;
+        this.email = email;
+        this.status = status;
+    }
 
     /**
      * =======================
@@ -52,7 +68,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public String getEmail() {

@@ -32,7 +32,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Controller
@@ -49,6 +48,10 @@ public class MainController {
     @Autowired
     private DeviceRepository deviceRepository;
 
+    /**
+     * Return index (dashboard) view to frontend
+     * Accessible only after being authenticated
+     */
     @GetMapping("/")
     public ModelAndView dashboard() {
         ModelAndView modelAndView = new ModelAndView();
@@ -57,6 +60,10 @@ public class MainController {
         return modelAndView;
     }
 
+    /**
+     * Return the user of current session
+     * Return empty if no session exists
+     */
     @GetMapping(value = "/getUser", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -73,6 +80,13 @@ public class MainController {
 
     }
 
+    /**
+     * Save the dataset to database based on user uploaded CSV file
+     * Return empty if no file is uploaded
+     *
+     * @param id   the user id of the file owner
+     * @param file uploaded CSV file
+     */
     @PostMapping("/uploadDataset")
     public String uploadDataset(@RequestParam("id") String id, @RequestParam("file") MultipartFile file) {
 
@@ -83,6 +97,7 @@ public class MainController {
                 CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
                 String[] row;
 
+                // Read the file line-by-line into String array
                 while ((row = csvReader.readNext()) != null) {
 
                     // Convert array to arraylist
@@ -117,6 +132,15 @@ public class MainController {
         return "";
     }
 
+    /**
+     * Return user requested filtered entry(s) from database
+     * Return empty if no requested entry(s) is found
+     *
+     * @param body request body from frontend
+     *             count: no. of requested entry(s)
+     *             period: range of timestamp
+     *             temperature: range of temperature
+     */
     @PostMapping("/getData")
     public String getData(@RequestBody String body) {
 
@@ -148,43 +172,45 @@ public class MainController {
 
     }
 
-    @PostMapping("/listData")
-    public String listData(@RequestBody String body) {
-
-        JsonObject deserializedBody = JsonParser.parseString(body).getAsJsonObject();
-        int count = deserializedBody.get("filter").getAsJsonObject().get("count").getAsInt();
-
-        Pageable limit = PageRequest.of(0, count);
-
-        Page<Entry> entries = entryRepository.findAll(limit);
-
-        if (!entries.isEmpty()) {
-            return new Gson().toJson(entries);
-        } else {
-            return "[]";
-        }
-    }
-
+    /**
+     * Run the training process
+     * based on the dataset obtained from database
+     *
+     * @param body request body from frontend
+     *             id: user id of current user
+     */
     @PostMapping("/train")
     public String train(@RequestBody String body) {
-
-        System.out.println("write to CSV");
 
         JsonObject deserializedBody = JsonParser.parseString(body).getAsJsonObject();
         String id = deserializedBody.get("id").getAsString();
 
-        Collection<Entry> entries = entryRepository.findAll();
+        List<Entry> entries = entryRepository.findAllSortedByTimestamp();
 
         try {
 
-            CSVWriter writer = new CSVWriter(new FileWriter("src/main/resources/users/" + id + "/dataset.csv"));
-            for (Entry entry : entries) {
-                writer.writeNext(entry.returnAsStringArray());
-            }
-            writer.close();
+            List<Float[]> features = new ArrayList<>();
+            List<Float[]> labels = new ArrayList<>();
 
-            Training training = new Training(id);
-            training.trainingProcess();
+            for (int i = 3; i < entries.size(); i++) {
+
+                    Float[] feature = {
+                        entries.get(i - 3).getTemperature(),
+                        entries.get(i - 2).getTemperature(),
+                        entries.get(i - 1).getTemperature(),
+                };
+
+                Float[] label = {
+                        entries.get(i).getTemperature()
+                };
+
+                features.add(feature);
+                labels.add(label);
+
+            }
+
+            Training training = new Training(id, features, labels);
+            return training.trainingProcess();
 
         } catch (IOException | InterruptedException exception) {
             System.out.println(exception);

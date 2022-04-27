@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public OnSuccessHandler onSuccessHandler(){
+    public OnSuccessHandler onSuccessHandler() {
         return new OnSuccessHandler();
     }
 
@@ -45,6 +45,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authProvider());
     }
 
+    /**
+     * Authentication filter configuration
+     * Configure handler for successful authentication
+     */
     public AuthenticationFilter authenticationFilter() throws Exception {
         AuthenticationFilter filter = new AuthenticationFilter();
         filter.setAuthenticationManager(authenticationManager());
@@ -54,25 +58,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     *  Security filter chain
-     *      - allow access for login page
-     *      - block access of non-registered user
-     * */
+     * Security filter chain
+     * - allow access for login page
+     * - block access of non-registered user from dashboard
+     *
+     * @param httpSecurity builder for security filter chain
+     */
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception{
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
                 .csrf().disable()
                 .requestCache().disable()
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                    .antMatchers("/").authenticated()
-                    .and()
+                .antMatchers("/").authenticated()
+                .and()
                 .formLogin()
-                    .loginPage("/authentication")
-                    .loginProcessingUrl("/login")
-                    .usernameParameter("username").passwordParameter("password")
-                    .and()
+                .loginPage("/authentication")
+                .loginProcessingUrl("/login")
+                .usernameParameter("username").passwordParameter("password")
+                .and()
                 .logout();
 
     }

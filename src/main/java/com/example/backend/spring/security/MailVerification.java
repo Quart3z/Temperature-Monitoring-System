@@ -9,19 +9,23 @@ import java.io.UnsupportedEncodingException;
 
 public class MailVerification {
 
-    //     PLEASE CHANGE THIS BEFORE PUBLISHED
-    public void verificationRequest(String username, String destination, String token, JavaMailSender mailSender) throws MessagingException, UnsupportedEncodingException {
+    /**
+     *  Sending of email verification for newly registered user
+     *  Only run when the user is successfully registered
+     * */
+    public void verificationRequest(
+            String sender, String username, String destination, String token, JavaMailSender mailSender) throws MessagingException, UnsupportedEncodingException {
 
+        // Email body text
         String content = "Dear " + username + ",<br>"
-                + "Please click the link below to verify your registration:<br>"
+                + "Click the link to verify your registration:<br>"
                 + "<h3><a href=\"http://localhost:8080/verify?token=" + token + "\" target=\"_self\">VERIFY</a></h3>"
-                + "Thank you,<br>"
-                + "Your company name.";
+                + "Thank you <3<br>";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setFrom("looiyaowei@gmail.com", "Me and myself");
+        helper.setFrom(sender, "Temps Monitor");
         helper.setTo(destination);
         helper.setSubject("Confirmation Link");
         helper.setText(content, true);
