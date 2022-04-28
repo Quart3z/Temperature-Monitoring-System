@@ -60,8 +60,13 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
+User is able to register and login to use the visualization tool. <br>
+[login-page] <br>
+[registration-page] <br><br>
 
-[comment]: <> ([![Product Name Screen Shot][product-screenshot]]&#40;https://example.com&#41;)
+Simply upload the dataset and the application is going to visualize the data. <br>
+Train the model with your own dataset and predict the future readings with the model.<br><br>
+![Dashboard of the application](screenshots/dashboard.png "Dashboard")
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -84,6 +89,8 @@ The easiest way to set up the database is using XAMPP as the server for database
 
 * Download XAMPP from the following link: https://www.apachefriends.org/download.html
 * Follow the link https://www.javatpoint.com/creating-mysql-database-with-xampp on how to setup the database.
+* Setup the database according to the ER-diagram below:
+![ER-diagram of the database](screenshots/ER-diagram.png "ER-diagram")
 
 ### Installation
 
@@ -158,4 +165,5 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/looi-yw
 
-[product-screenshot]: images/screenshot.png
+[login-page]: screenshots/login.png
+[registration-page]: screenshots/registration.png
