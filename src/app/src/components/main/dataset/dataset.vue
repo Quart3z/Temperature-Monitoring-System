@@ -1,9 +1,11 @@
 <template>
     <div id="dataset" class="card bg-white m-3 p-3">
         <div class="card-title">
-            <button v-on:click="train">Train</button>
-            <a class="nav-item dropdown" data-bs-toggle="modal" data-bs-target="#upload-modal">
-                <i class="bi-cloud-upload fs-4 px-2"></i>
+            <a class="nav-item" v-on:click="train">
+                <i class="bi bi-cpu fs-4 px-2"></i>
+            </a>
+            <a class="nav-item" data-bs-toggle="modal" data-bs-target="#upload-modal">
+                <i class="bi bi-cloud-arrow-up fs-4 px-2"></i>
             </a>
             <UploadModal :id=id />
         </div>
@@ -14,18 +16,14 @@
                         <th scope="col"></th>
                         <th scope="col">Sensor</th>
                         <th scope="col"><input class="me-2" type="checkbox" v-model="columnCheck[0]">Timestamp</th>
-                        <th scope="col"><input class="me-2" type="checkbox" v-model="columnCheck[1]">Humidity</th>
                         <th scope="col">Temperature</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="dataset in datasets" :key="dataset.id">
                         <th scope="row">{{ dataset.id }}</th>
-                        <td>{{ dataset.device.uuid }}</td>
+                        <td class="d-inline-block text-truncate" style="width: 150px">{{ dataset.device.uuid }}</td>
                         <td v-bind:class="{'table-secondary': columnCheck[0]}">{{ new Date(dataset.timestamp).toLocaleString() }}</td>
-                        <td v-bind:class="{'table-secondary': columnCheck[1]}">
-                            <input type="number" v-model="dataset.humidity" disabled>
-                        </td>
                         <td>{{dataset.temperature}}</td>
                     </tr>
                 </tbody>
@@ -43,7 +41,7 @@
         data() {
             return {
                 datasets: [],
-                columnCheck: [false, false, false, false]
+                columnCheck: [false, false, false, false],
             }
         },
         props: {
@@ -104,6 +102,10 @@
                             console.log(response)
                         }
                     })
+
+            },
+
+            edit: function(){
 
             }
         },
