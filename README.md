@@ -66,7 +66,7 @@ User is able to register and login to use the visualization tool. <br>
 
 Simply upload the dataset and the application is going to visualize the data. <br>
 Train the model with your own dataset and predict the future readings with the model.<br><br>
-![alt text](screenshots/dashboard.png "Dashboard")
+![Dashboard of the application](screenshots/dashboard.png "Dashboard")
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -89,6 +89,8 @@ The easiest way to set up the database is using XAMPP as the server for database
 
 * Download XAMPP from the following link: https://www.apachefriends.org/download.html
 * Follow the link https://www.javatpoint.com/creating-mysql-database-with-xampp on how to setup the database.
+
+![ER-diagram of the database](screenshots/ER-diagram.png "ER-diagram")
 
 ### Installation
 
