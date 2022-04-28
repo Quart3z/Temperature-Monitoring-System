@@ -89,7 +89,7 @@ The easiest way to set up the database is using XAMPP as the server for database
 
 * Download XAMPP from the following link: https://www.apachefriends.org/download.html
 * Follow the link https://www.javatpoint.com/creating-mysql-database-with-xampp on how to setup the database.
-
+* Setup the database according to the ER-diagram below:
 ![ER-diagram of the database](screenshots/ER-diagram.png "ER-diagram")
 
 ### Installation
