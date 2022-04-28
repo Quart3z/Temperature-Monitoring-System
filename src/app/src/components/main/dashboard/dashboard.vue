@@ -1,13 +1,13 @@
 <template>
     <div id="dashboard" class="">
         <Chart :id=id />
-        <Prediction :id=id />
+        <ML :id=id />
     </div>
 </template>
 
 <script>
     import Chart from "./chart/chart.vue"
-    import Prediction from "./chart/prediction.vue"
+    import ML from "./chart/machineLearning.vue"
 
     export default {
         name: 'Dashboard',
@@ -19,7 +19,7 @@
         },
         components: {
             Chart,
-            Prediction
+            ML
         },
     }
 </script>

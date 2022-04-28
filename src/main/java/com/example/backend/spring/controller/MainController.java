@@ -185,31 +185,31 @@ public class MainController {
         JsonObject deserializedBody = JsonParser.parseString(body).getAsJsonObject();
         String id = deserializedBody.get("id").getAsString();
 
+        JsonObject hyperParameters = deserializedBody.get("hyperparameters").getAsJsonObject();
+
         List<Entry> entries = entryRepository.findAllSortedByTimestamp();
 
         try {
 
-            List<Float[]> features = new ArrayList<>();
-            List<Float[]> labels = new ArrayList<>();
+            List<List<Float>> features = new ArrayList<>();
+            List<List<Float>> labels = new ArrayList<>();
 
             for (int i = 3; i < entries.size(); i++) {
 
-                    Float[] feature = {
-                        entries.get(i - 3).getTemperature(),
-                        entries.get(i - 2).getTemperature(),
-                        entries.get(i - 1).getTemperature(),
-                };
+                List<Float> feature = new ArrayList<>();
+                List<Float> label = new ArrayList<>();
 
-                Float[] label = {
-                        entries.get(i).getTemperature()
-                };
+                for (int j = 3; j > -1; j--) {
+                    feature.add(entries.get(i - j).getTemperature());
+                    label.add(entries.get(i).getTemperature());
+                }
 
                 features.add(feature);
                 labels.add(label);
 
             }
 
-            Training training = new Training(id, features, labels);
+            Training training = new Training(id, features, labels, hyperParameters);
             return training.trainingProcess();
 
         } catch (IOException | InterruptedException exception) {

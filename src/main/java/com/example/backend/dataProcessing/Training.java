@@ -1,5 +1,6 @@
 package com.example.backend.dataProcessing;
 
+import com.google.gson.JsonObject;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.*;
@@ -9,6 +10,7 @@ import org.nd4j.evaluation.regression.RegressionEvaluation;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.ViewIterator;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler;
@@ -31,32 +33,36 @@ import java.util.*;
 public class Training {
 
     /**
-     * =================
-     * Hyper parameters
-     * =================
-     */
-    private static final int seed = 100;
-    private static final double learningRate = 0.01;
-    private static final int epoch = 800;
-
-    /**
      * ===============
      * Class attributes
      * ===============
      */
     private final String userId;
-    private final List<Float[]> features;
-    private final List<Float[]> labels;
+    private final List<List<Float>> features;
+    private final List<List<Float>> labels;
+
+    private final int seed;
+    private final double learningRate;
+    private final int nEpoch;
 
     /**
      * =================
      * Class constructor
      * =================
      */
-    public Training(String userId, List<Float[]> features, List<Float[]> labels) {
+    public Training(String userId, List<List<Float>> features, List<List<Float>> labels, JsonObject hyperparameters) {
         this.userId = userId;
         this.features = features;
         this.labels = labels;
+
+        this.seed = hyperparameters.get("seed").getAsInt();
+        this.learningRate = hyperparameters.get("learningRate").getAsDouble();
+        this.nEpoch = hyperparameters.get("nEpoch").getAsInt();
+    }
+
+    public static void main(String[] args) {
+        final INDArray input = Nd4j.create(new double[]{28.66, 26.78, 27.36}, 1, 3, 1); // 26.57
+        System.out.println(input);
     }
 
     /**
@@ -69,11 +75,11 @@ public class Training {
         INDArray labelsArray = Nd4j.zeros(labels.size(), 1);
 
         for (int i = 0; i < features.size(); i++) {
-            featuresArray.putScalar(new int[]{i, 0, 0}, features.get(i)[0]);
-            featuresArray.putScalar(new int[]{i, 1, 0}, features.get(i)[1]);
-            featuresArray.putScalar(new int[]{i, 2, 0}, features.get(i)[2]);
+            featuresArray.putScalar(new int[]{i, 0, 0}, features.get(i).get(0));
+            featuresArray.putScalar(new int[]{i, 1, 0}, features.get(i).get(1));
+            featuresArray.putScalar(new int[]{i, 2, 0}, features.get(i).get(2));
 
-            labelsArray.putScalar(new int[]{i, 0}, labels.get(i)[0]);
+            labelsArray.putScalar(new int[]{i, 0}, labels.get(i).get(0));
         }
 
         return new DataSet(featuresArray, labelsArray);
@@ -82,7 +88,6 @@ public class Training {
 
     /**
      * Configuration of the LSTM neural network
-     * Hyper parameters can be manually set at Hyper Parameters section
      * <p>
      * Structure of neural net:
      * LSTMLayer - nOutput: 100
@@ -125,24 +130,38 @@ public class Training {
         // 1. Obtain the dataset from database
         DataSet dataSet = dataReading();
 
+        SplitTestAndTrain splitTestAndTrain = dataSet.splitTestAndTrain(0.8);
+        DataSet trainSet = splitTestAndTrain.getTrain();
+        DataSet testSet = splitTestAndTrain.getTest();
+
         // 2. Configuration of the network
-        MultiLayerNetwork modal = networkConfig();
-        modal.init();
-        modal.setListeners(new ScoreIterationListener(5));
+        MultiLayerNetwork model = networkConfig();
+        model.init();
+        model.setListeners(new ScoreIterationListener(5));
 
         // 3. Training
-        for (int i = 0; i < epoch; i++) {
-            modal.fit(dataSet);
+        for (int i = 0; i < nEpoch; i++) {
+            model.fit(trainSet);
         }
 
-        // 4. Save modal
-        modal.save(new File("src/main/resources/users/" + userId + "/modal.bin"));
+        // 4. Save model
+        model.save(new File("src/main/resources/users/" + userId + "/model.bin"));
 
-        DataSetIterator iterator = new ViewIterator(dataSet, 1);
+        DataSetIterator trainIterator = new ViewIterator(trainSet, 1);
+        DataSetIterator testIterator = new ViewIterator(testSet, 1);
 
-        RegressionEvaluation evaluation = modal.evaluateRegression(iterator);
+        RegressionEvaluation trainEval = model.evaluateRegression(trainIterator);
+        RegressionEvaluation testEval = model.evaluateRegression(testIterator);
 
-        return evaluation.stats();
+        System.out.println(trainEval.stats());
+        System.out.println(testEval.stats());
+
+//     final INDArray input = Nd4j.create(new double[]{28.66, 26.78, 27.36}, 1, 3, 1); // 26.57
+        final INDArray input = Nd4j.create(new double[]{26.71, 27.87, 28.28}, 1, 3, 1); // 28.46
+        INDArray result = model.output(input);
+        System.out.println(result.getDouble(0));
+
+        return testEval.stats();
 
     }
 

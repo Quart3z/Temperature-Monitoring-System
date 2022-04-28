@@ -1,54 +1,46 @@
 <template>
-    <div id="prediction" class="card bg-white m-3 p-3">
-        <div class="card-title">
-            <button class="btn btn-sm btn-primary mb-3" type="button" v-on:click="train" :disabled="isTrain || isPredict">
-                Train
-            </button>
-            <button class="btn btn-sm btn-primary mb-3 ms-3" type="button" :disabled="isTrain || isPredict">
-                Predict
-            </button>
-        </div>
-        <div class="card-body">
-            <div class="spinner-border" role="status" v-if="isTrain">
+    <div id="machineLearning" class="card bg-white m-3 p-3">
+        <ul class="nav nav-tabs" id="MLtabs" role="tablist">
+            <li class="nav-item">
+                <a v-bind:class="{'nav-link': true, 'active': tab === 1 }" v-on:click="tab = 1" aria-controls="train-panel" aria-selected="true">Train</a>
+            </li>
+            <li class="nav-item">
+                <a v-bind:class="{'nav-link': true, 'active': tab === 2 }" v-on:click="tab = 2" aria-controls="predict-panel" aria-selected="false">Predict</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div v-bind:class="{'tab-pane fade': true, 'show active': tab === 1 }" role="tabpanel" aria-labelledby="train-panel">
+                <Training :id="id"/>
             </div>
-            <!-- <div v-if="result.length > 0">
-                <table>
-                    <tr>
-                        <th v-for="header in result[0]">{{ header }}</th>
-                    </tr>
-                    <tr>
-                        <th v-for="result in result[1]">{{ result }}</th>
-                    </tr>
-                </table>
-            </div> -->
-
-            <highcharts :options="chartConfig" :key="redraw" v-if="isPredict" />
+            <div v-bind:class="{'tab-pane fade': true, 'show active': tab === 2 }" role="tabpanel" aria-labelledby="predict-panel">
+                <highcharts :options="chartConfig" :key="redraw" />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+
+    import Training from './trainingPanel.vue'
+
     // Highchart
     import {
         Chart
     } from 'highcharts-vue'
     import highcharts from 'highcharts'
-    import Exporting from "highcharts/modules/exporting"
+    import Exporting from 'highcharts/modules/exporting'
     import ExportData from 'highcharts/modules/export-data'
-
 
     Exporting(highcharts)
     ExportData(highcharts)
 
     export default {
-        name: 'Chart',
+        name: 'ML',
         data() {
             return {
+                tab: 1,
                 redraw: true,
-                isTrain: false,
-                isPredict: false,
                 datasets: [],
-                result: [],
                 chartConfig: {
                     time: {
                         useUTC: false
@@ -106,42 +98,10 @@
             id: null
         },
         methods: {
-
-            train: function () {
-
-                this.isTrain = true;
-
-                const request = {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: this.id,
-                    })
-                };
-
-                fetch("/train", request)
-                    .then(response => {
-                        if (response.status == 200) {
-                            console.log(response)
-                            this.isTrain = false
-
-                            response.text().then(text => {
-                                let stats = text.split(/\s+/)
-                                this.result = [stats.slice(0, 7), stats.slice(7, -1)]
-                            })
-
-                        } else {
-                            console.log(response)
-                        }
-                    })
-
-            },
-
         },
         mounted() {},
         components: {
+            Training,
             highcharts: Chart,
         },
     }
