@@ -60,7 +60,7 @@
 
     Exporting(highcharts)
     ExportData(highcharts)
-    
+
     export default {
         name: 'Chart',
         data() {
@@ -83,6 +83,10 @@
                         spacingLeft: 30,
                         spacingRight: 30,
                     },
+                    series: [{
+                        name: "Reading",
+                        data: []
+                    }],
                     yAxis: {
                         type: 'float',
                         title: {
@@ -161,21 +165,14 @@
                     .then(response => {
                         if (response.status == 200) {
                             response.json().then(entries => {
-
                                 this.datasets = []
 
                                 for (let entry in entries) {
-                                    this.datasets.push({
 
-                                        name: "Device " + entry,
-                                        data: entries[entry].map((e) => {
-                                            return [e.timestamp, e.temperature]
-                                        })
-
-                                    })
+                                    this.datasets.push(entries[entry].temperature)
                                 }
 
-                                this.chartConfig.series = this.datasets;
+                                this.chartConfig.series[0].data = this.datasets;
                                 this.redraw = !this.redraw
                             })
 

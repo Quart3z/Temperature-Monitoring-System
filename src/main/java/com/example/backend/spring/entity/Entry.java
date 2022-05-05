@@ -141,10 +141,6 @@ public class Entry {
 
         return new String[]{
                 String.valueOf(temperature),
-//                String.valueOf(timestamp),
-//                String.valueOf(humidity),
-//                String.valueOf(precipitation)
-//                String.valueOf(windSpeed)
         };
 
     }

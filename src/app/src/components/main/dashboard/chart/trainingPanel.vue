@@ -6,11 +6,15 @@
                     <label for="seed">Seed</label>
                     <input type="number" class="form-control" id="seed" placeholder="Seed" v-model="hyperparameters.seed">
                 </div>
+                <div class="col-2">
+                    <label for="window">Window size</label>
+                    <input type="number" class="form-control" id="window" placeholder="Window size" v-model="hyperparameters.window">
+                </div>
             </div>
             <div class="row mb-3">
                 <div class="col">
-                    <label for="learningRate">Learning Rate</label>
-                    <input type="number" class="form-control" id="learningRate" placeholder="Learning Rate" v-model="hyperparameters.learningRate">
+                    <label for="learningRate">Learning rate</label>
+                    <input type="number" class="form-control" id="learningRate" placeholder="Learning rate" v-model="hyperparameters.learningRate">
                 </div>
                 <div class="col">
                     <label for="epochs">No. of epochs</label>
@@ -63,7 +67,8 @@
                 hyperparameters: {
                     seed: 100,
                     learningRate: 0.001,
-                    nEpoch: 3
+                    nEpoch: 200,
+                    window: 5
                 },
                 datasets: [],
                 result: [],

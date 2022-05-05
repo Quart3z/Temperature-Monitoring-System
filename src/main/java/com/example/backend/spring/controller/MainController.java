@@ -3,6 +3,7 @@ package com.example.backend.spring.controller;
 import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import com.example.backend.dataProcessing.Predicting;
 import com.example.backend.dataProcessing.Training;
 import com.example.backend.spring.entity.Device;
 import com.example.backend.spring.entity.Entry;
@@ -156,16 +157,18 @@ public class MainController {
         float min = temperature.get(0).getAsFloat();
         float max = temperature.get(1).getAsFloat();
 
-        Collection<Entry> entries = entryRepository.findEntries(count, start, end, min, max);
+        List<Entry> entries = entryRepository.findEntries(count, start, end, min, max);
 
-        Map<Long, List<Entry>> hashMap = Optional.ofNullable(entries)
-                .orElseGet(ArrayList::new)
-                .stream()
-                .collect(Collectors
-                        .groupingBy(Entry::getDeviceId));
+        System.out.println(entries);
+
+//        Map<Long, List<Entry>> hashMap = Optional.ofNullable(entries)
+//                .orElseGet(ArrayList::new)
+//                .stream()
+//                .collect(Collectors
+//                        .groupingBy(Entry::getDeviceId));
 
         if (!entries.isEmpty()) {
-            return new Gson().toJson(hashMap);
+            return new Gson().toJson(entries);
         } else {
             return "[]";
         }
@@ -187,6 +190,8 @@ public class MainController {
 
         JsonObject hyperParameters = deserializedBody.get("hyperparameters").getAsJsonObject();
 
+        int windowSize = hyperParameters.get("window").getAsInt();
+
         List<Entry> entries = entryRepository.findAllSortedByTimestamp();
 
         try {
@@ -194,15 +199,16 @@ public class MainController {
             List<List<Float>> features = new ArrayList<>();
             List<List<Float>> labels = new ArrayList<>();
 
-            for (int i = 3; i < entries.size(); i++) {
+            for (int i = windowSize; i < entries.size(); i++) {
 
                 List<Float> feature = new ArrayList<>();
                 List<Float> label = new ArrayList<>();
 
-                for (int j = 3; j > -1; j--) {
+                for (int j = windowSize; j > 0; j--) {
                     feature.add(entries.get(i - j).getTemperature());
-                    label.add(entries.get(i).getTemperature());
                 }
+
+                label.add(entries.get(i).getTemperature());
 
                 features.add(feature);
                 labels.add(label);
@@ -211,6 +217,39 @@ public class MainController {
 
             Training training = new Training(id, features, labels, hyperParameters);
             return training.trainingProcess();
+
+        } catch (IOException | InterruptedException exception) {
+            System.out.println(exception);
+        }
+
+        return "";
+    }
+
+    @PostMapping("/predict")
+    public String predict(@RequestBody String body){
+        JsonObject deserializedBody = JsonParser.parseString(body).getAsJsonObject();
+        String id = deserializedBody.get("id").getAsString();
+
+        List<Entry> entries = entryRepository.findAllSortedByTimestamp();
+
+        try {
+
+            List<List<Float>> features = new ArrayList<>();
+
+            for (int i = 5; i < entries.size(); i++) {
+
+                List<Float> feature = new ArrayList<>();
+
+                for (int j = 5; j > 0; j--) {
+                    feature.add(entries.get(i - j).getTemperature());
+                }
+                features.add(feature);
+            }
+
+            Predicting predicting = new Predicting(id, features);
+            List<Double> predictions = predicting.predictions();
+
+            return new Gson().toJson(predictions);
 
         } catch (IOException | InterruptedException exception) {
             System.out.println(exception);

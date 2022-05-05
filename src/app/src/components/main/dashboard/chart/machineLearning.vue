@@ -13,7 +13,7 @@
                 <Training :id="id"/>
             </div>
             <div v-bind:class="{'tab-pane fade': true, 'show active': tab === 2 }" role="tabpanel" aria-labelledby="predict-panel">
-                <highcharts :options="chartConfig" :key="redraw" />
+                <Predict :id="id" />
             </div>
         </div>
     </div>
@@ -22,76 +22,13 @@
 <script>
 
     import Training from './trainingPanel.vue'
-
-    // Highchart
-    import {
-        Chart
-    } from 'highcharts-vue'
-    import highcharts from 'highcharts'
-    import Exporting from 'highcharts/modules/exporting'
-    import ExportData from 'highcharts/modules/export-data'
-
-    Exporting(highcharts)
-    ExportData(highcharts)
+    import Predict from './predictPanel.vue'
 
     export default {
         name: 'ML',
         data() {
             return {
                 tab: 1,
-                redraw: true,
-                datasets: [],
-                chartConfig: {
-                    time: {
-                        useUTC: false
-                    },
-                    title: {
-                        text: "Predicted Readings"
-                    },
-                    chart: {
-                        spacingLeft: 30,
-                        spacingRight: 30,
-                    },
-                    yAxis: {
-                        type: 'float',
-                        title: {
-                            text: "Temperature",
-                        }
-                    },
-                    xAxis: {
-                        type: 'datetime',
-                        title: {
-                            text: "Timestamp"
-                        }
-                    },
-                    legend: {
-                        margin: 30,
-                        align: 'right',
-                        layout: "vertical",
-                        verticalAlign: 'middle',
-                        floating: false
-                    },
-                    exporting: {
-                        enabled: true,
-                        csv: {
-                            decimalPoint: '.',
-                            dateFormat: '%Y-%m-%d %H:%M:%S'
-                        },
-                        buttons: {
-                            contextButton: {
-                                menuItems: [
-                                    'printChart',
-                                    'downloadPNG',
-                                    'downloadJPEG',
-                                    'downloadPDF',
-                                    'downloadSVG',
-                                    'downloadCSV',
-                                    'downloadJSON'
-                                ]
-                            }
-                        }
-                    },
-                }
             }
         },
         props: {
@@ -102,7 +39,7 @@
         mounted() {},
         components: {
             Training,
-            highcharts: Chart,
+            Predict,
         },
     }
 </script>
